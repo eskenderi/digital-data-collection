@@ -12,3 +12,7 @@ jobs:
     # Runs a single command using the runners shell
     - name: Execute transformation
       run: find . -name "*(R).ipynb" -exec jupytext --to Rmd {} \;
+    - name: Upload outcomes
+      uses: actions/upload-artifact@v4
+        with:
+          path: *.Rmd
