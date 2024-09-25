@@ -12,3 +12,15 @@ jobs:
     # Runs a single command using the runners shell
     - name: Execute transformation
       run: find . -name "*(R).ipynb" -exec jupytext --to Rmd {} \;
+    - name: Commit and Push Changes
+      run: |
+        # configure user
+        git config --global user.name "Notebooks to Rdm action"
+        git config --global user.email "no-reply@example.com"
+        
+        # stage any file changes to be committed
+        git add .
+
+        # make commit with staged changes
+        git commit -m 'Automatically created Rmd files from ipynb files'
+        git push
