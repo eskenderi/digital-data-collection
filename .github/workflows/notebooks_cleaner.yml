@@ -1,6 +1,7 @@
-name: Transforms Jupyter Notebooks to Rmarkdown
+name: Cleaing Jupyter Notebooks
 on:
-  workflow_dispatch:
+  - workflow_dispatch
+  - push
 
 jobs:
   produce_rdm_copies:
