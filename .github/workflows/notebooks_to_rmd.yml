@@ -10,5 +10,5 @@ jobs:
     - uses: actions/setup-python@v5
     - run: pip install jupytext
     # Runs a single command using the runners shell
-    - name: Send greeting
-      run: echo "Hello Matti"
+    - name: Execute transformation
+      run: find . -name "*(R).ipynb" -exec jupytext --to Rmd {} \;
