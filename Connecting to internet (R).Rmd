@@ -1,0 +1,60 @@
+---
+jupyter:
+  jupytext:
+    text_representation:
+      extension: .Rmd
+      format_name: rmarkdown
+      format_version: '1.2'
+      jupytext_version: 1.16.4
+  kernelspec:
+    display_name: R
+    language: R
+    name: ir
+---
+
+## Connecting to the Internet
+
+We use the httr2 library, see [its documentation](https://httr2.r-lib.org/) for further details.
+
+```{r vscode={'languageId': 'r'}}
+install.packages("httr2")
+```
+
+```{r vscode={'languageId': 'r'}}
+library("httr2")
+```
+
+```{r vscode={'languageId': 'r'}}
+r = request("https://www.example.com")
+response = req_perform( r ) 
+print( response )
+print( resp_headers(response) )
+print( resp_body_string(response) )
+```
+
+## JSON
+
+```{r vscode={'languageId': 'r'}}
+install.packages('jsonlite')
+library('jsonlite')
+```
+
+```{r vscode={'languageId': 'r'}}
+r = request("https://reqres.in/api/users")
+response = req_perform( r )
+
+data = fromJSON( resp_body_string(response) )  ## we could just do resp_body_json(response)
+
+print( data )
+print( data$data )
+```
+
+```{r vscode={'languageId': 'r'}}
+for( i in 1:nrow(data$data) ) {
+    print( data$data[i, 'email'] )
+}
+```
+
+```{r vscode={'languageId': 'r'}}
+
+```

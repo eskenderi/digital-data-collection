@@ -1,0 +1,141 @@
+---
+jupyter:
+  jupytext:
+    text_representation:
+      extension: .Rmd
+      format_name: rmarkdown
+      format_version: '1.2'
+      jupytext_version: 1.16.4
+  kernelspec:
+    display_name: R
+    language: R
+    name: ir
+---
+
+## Advanced HTML data collection
+
+Increasingly, websites cannot be analysed just through web scraping -- they include components which are rendered only on the browser.
+This is both a challenge and an opportunity, as often such webpages may pull content from internal grey APIs as well.
+
+
+## Selenium
+
+[Selenium](https://www.selenium.dev/) is a tool which allows executing content on the website, rendering it like a website would do.
+It is possible to get the full _rendered_ HTML and use other tools on that, such as BeautifulSoup; or then use its inbuild tools to collect data and navigate on the website.
+There is a package making Selenium available to R: [RSelenium](https://docs.ropensci.org/RSelenium/articles/basics.html).
+You *must* install Java to make this operational.
+
+```{r vscode={'languageId': 'r'}}
+install.packages("RSelenium")
+```
+
+### Opening a new web browser
+
+Selenium is aimed for automated testing of different browsers.
+Therefore, you can open different browsers through [webdrivers](https://www.rdocumentation.org/packages/RSelenium/versions/1.7.9/topics/rsDriver).
+Variable `page_source` includes HTML for the full website, and [`findElements` function](https://www.rdocumentation.org/packages/seleniumPipes/versions/0.3.7/topics/elementClick) can be used to identify elements through tag name, class name, id or xpath.
+
+It is also possible to [interact](https://rpubs.com/johndharrison/seleniumPipes-basic) with the webpage, such as click elements, press keys or [produce action chains](https://rpubs.com/johndharrison/seleniumPipes-basic).
+
+```{r vscode={'languageId': 'r'}}
+library(RSelenium)
+
+selenium <- rsDriver(
+    browser = c("firefox")
+)
+
+driver  <- selenium$client
+
+driver$navigate("http://www.helsinki.fi")
+```
+
+```{r vscode={'languageId': 'r'}}
+library(rvest)
+
+html_content <- driver$getPageSource()[[1]]
+
+parsed <- read_html(html_content)
+
+images <- html_nodes(parsed, "img")
+
+for (image in images) {
+  print(image)
+}
+```
+
+```{r vscode={'languageId': 'r'}}
+for( image in driver$findElements( using = "tag name", 'img') ) {
+    print( image$getElementAttribute("src") )
+}
+```
+
+```{r vscode={'languageId': 'r'}}
+for( link in driver$findElements( using = "tag name", 'a') ) {
+    print( link$getElementAttribute("href") )
+    print( link$getElementText() )
+
+    ## this allows you to get the HTML where the link is located, might be useful some days
+    outerHTML <- driver$executeScript("return arguments[0].outerHTML;", list(link))
+    outerHTML <- outerHTML[[1]]
+    print( outerHTML )
+}
+```
+
+```{r vscode={'languageId': 'r'}}
+button <- driver$findElement( using = "xpath" , "/html/body/div[2]/div/hy-main/div/div/div/article/hy-hero-carousel/div/div/div[1]/div[1]/div/div[1]/hy-cta-button/span/a/span[1]")
+button$clickElement() ## this is not according to documentation the correct!
+```
+
+```{r vscode={'languageId': 'r'}}
+## stop the execution
+driver$close()
+```
+
+### Tasks
+
+1. Find all links on Yle.fi main page. What amount of them starts with http?
+1. Find all images on Yle.fi and print their URLs
+1. Go through all Finnish university web frontpages. Which of them have have a link to (a) Facebook, (b) TikTok or (c) X?
+1. Go through all Finnish university web frontpages. Collect and download all images from them.
+1. Extract the text of a single article on Yle.fi
+1. Extract the text of a single article on HS.fi
+1. Extract the text of a single news article on Helsinki.fi
+1. Extract the text of a single news article on Aamulehti.fi
+1. Extract the text of a single news article on BBC.com
+1. Extract the text of a single news article on New York Times
+
+
+## Grey APIs
+
+Websites which allow unlimited scrolling often have some kind of API which allow website to "pull" new content.
+It is possible to use these APIs directly, but sometimes they require tricks -- such as setting cookies, executing the command on a web broser as logged in user, using a spesific application key etc.
+
+```{r vscode={'languageId': 'r'}}
+library("httr2")
+
+url <- "https://ca.api.yle.fi/v1/graphql?app_id=ukko_prod&app_key=12150df3a0c8844d37c520235bf7c5d4&query=query+tuoreimmatMostRecentUutisetAndUrheiluQuery+($limit:Int!$exclude:Exclude!$publishedBefore:String+$fields:ArticleFields+%3DHEADLINE)%7Btuoreimmat:+mostRecentUutisetAndUrheiluMainNews+(+limit:$limit+exclude:$exclude+publishedBefore:$publishedBefore+fields:$fields+)%7Bitems%7Bid+title+fullUrl+lead+publisher%7Bname%7Dsubjects%7B...conceptFields%7DdatePublished+format+headline%7Bfull+short+image%7B...on+ImageBlock%7B...listItemImageBlockFields%7D%7Dvideo%7B...on+VideoBlock%7Bid+image%7B...listItemImageBlockFields%7D%7D%7Daudio%7B...on+AudioBlock%7Bid+image%7B...listItemImageBlockFields%7D%7D%7D%7DmainMedia%7Btype:__typename...on+ImageBlock%7B...listItemImageBlockFields%7D...on+AudioBlock%7Bid+image%7B...listItemImageBlockFields%7D%7D...on+VideoBlock%7Bid+offsetSeconds+image%7B...listItemImageBlockFields%7D%7D%7Dtopic%7Bid+isHidden+isLocked+acceptedCommentsCount%7D%7D%7D%7Dfragment+conceptFields+on+Concept%7Bid+alternativeIds+title%7Bfi+sv+se+en+uk+ru%7D%7Dfragment+listItemImageBlockFields+on+ImageBlock%7Bid+alt+version+blurhash+crops%7Baspect+coordinates%7Bheight+width+x+y%7D%7D%7D&variables=%7B%22limit%22:21,%22exclude%22:%7B%22properties%22:[%22importance:low%22,%22automaticListHint:never%22,%22automaticListHint:no-recently%22],%22journalisticStyle%22:[%22non_journalistic_content%22],%22coverage%22:%22LOCAL%22%7D,%22publishedBefore%22:%222024-08-22T03:15:46%2B0300%22%7D"
+
+r = request(url)
+response = req_perform( r ) 
+data <- resp_body_json(response)
+
+print( data )
+```
+
+### Tasks
+
+* Collect Tiktok vidoes on cats.
+
+
+## Tricks of the trade
+
+Sometimes websites try to block data collection.
+There are some techniques you can use:
+
+* request headers: ensure your requests looks like it is a real web browser
+* cookies: collect and use the cookies provided by the services and sent them back to them
+* wait: sometimes services request you to wait for data analysis
+
+```{r vscode={'languageId': 'r'}}
+
+```

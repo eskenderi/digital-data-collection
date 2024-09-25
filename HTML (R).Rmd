@@ -1,0 +1,178 @@
+---
+jupyter:
+  jupytext:
+    text_representation:
+      extension: .Rmd
+      format_name: rmarkdown
+      format_version: '1.2'
+      jupytext_version: 1.16.4
+  kernelspec:
+    display_name: R
+    language: R
+    name: ir
+---
+
+# Web scraping
+
+When there are no APIs, data can be collected from website directly using techniques such as web scraping. This means extracting from the HTML content directly. This can be text, images, or, links.
+
+To do this, one needs to parse HTML markup (text) into meaningful structure. In R [rvest](https://rvest.tidyverse.org/) is a popular library to work on HTML.
+
+```{r vscode={'languageId': 'r'}}
+install.packages("rvest")
+```
+
+```{r vscode={'languageId': 'r'}}
+library(httr2)
+library(rvest)
+
+r = request("https://www.helsinki.fi")
+response = req_perform( r ) 
+website <- resp_body_string(response)
+
+parsed <- read_html(website)
+
+print(parsed)
+```
+
+# Finding elements
+
+Command `html_nodes` can be used to find all spesific elements from the website, either using their tag, their ID or their CSS class, or combinations of these.
+It is also possible to nest these.
+
+```{r vscode={'languageId': 'r'}}
+links <- html_nodes(parsed, "a")
+
+for (link in links) {
+  print(link)
+}
+```
+
+```{r vscode={'languageId': 'r'}}
+texts <- html_nodes(parsed , ".paragraph")
+
+for (text in texts) {
+  print(text)
+}
+```
+
+```{r vscode={'languageId': 'r'}}
+texts <- html_nodes(parsed , "#does not exists")
+
+for (text in texts) {
+  print(text)
+}
+```
+
+```{r vscode={'languageId': 'r'}}
+banners <-  html_nodes(parsed, "[role='banner']")
+
+for (banner in banners) {
+  print(banner)
+}
+```
+
+```{r vscode={'languageId': 'r'}}
+## nested structure
+
+banner <-  html_node(parsed, "[role='banner']")
+
+links <- html_nodes(banner, "a")
+for (link in links) {
+    print(link)
+}
+```
+
+## Attributes and content
+
+HTML tags have attributes and content and one can access them through parsing:
+
+```{r vscode={'languageId': 'r'}}
+links <- html_nodes(parsed, "a")
+
+for (link in links) {
+  href <-  html_attr(link, "href")
+  text <- html_text( link )
+  print(paste(href, text))
+}
+```
+
+## Tasks
+
+1. Find all links on Yle.fi main page. What amount of them starts with http?
+1. Find all images on Yle.fi and print their URLs
+1. Go through all Finnish university web frontpages. Which of them have have a link to (a) Facebook, (b) TikTok or (c) X?
+1. Extract the text of a single article on Yle.fi
+1. Extract the text of a single article on HS.fi
+1. Extract the text of a single news article on Helsinki.fi
+1. Extract the text of a single news article on Aamulehti.fi
+1. Extract the text of a single news article on BBC.com
+1. Extract the text of a single news article on New York Times
+
+
+# XPath
+
+There is a [dedicated query language](https://en.wikipedia.org/wiki/XPath) to work with HTML/XML structured documents, you can copy the exact queries from the browser developer tools.
+This requires parsing and working with the library using lxml library.
+
+```{r vscode={'languageId': 'r'}}
+library(xml2)
+
+dom <- read_html(website)
+
+links <- xml_find_all(dom, "//a")
+
+for (link in links) {
+  href <- xml_attr(link, "href")
+  text <- xml_text(link)
+  print(paste(href, text))
+}
+```
+
+
+
+
+# Following links, crawlers and spiders
+
+Sometimes there is a need to follow links, for example identify follow-up pages and crawl the content on them as well.
+On most simples format, one can detect links and open them.
+There are also spesific libraries for this purpose, such as Python [Scrapy](https://docs.scrapy.org/en/latest/).
+
+```{r vscode={'languageId': 'r'}}
+site = "https://www.helsinki.fi"
+r = request(site)
+response = req_perform( r ) 
+website <- resp_body_string(response)
+
+parsed <- read_html(website)
+
+links <- html_nodes(parsed, "a")
+
+for (link in links) {
+  href <- html_attr(link, "href")
+  
+  if ( startsWith(href, "/") ) {
+    full_url <- paste0(site, href)
+    print(full_url)
+    
+    r2 = request( full_url )
+    response2 = req_perform( r2 ) 
+    website2 <- resp_body_string(response2)
+    # You can process html2 further if needed
+  }
+}
+```
+
+## Tasks
+
+* Fix the above code to work correctly, i.e. manage the Nonetype challenge
+* Collect all links which are not in the same domain
+* Parse collected websites and calculate the times `cat` is mentioned throughout them.
+
+```{r vscode={'languageId': 'r'}}
+## Scrapy only for Python
+```
+
+## Task
+
+* Adapt the scrapy parser to work on HS.fi
