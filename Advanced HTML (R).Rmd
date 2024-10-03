@@ -25,6 +25,13 @@ It is possible to get the full _rendered_ HTML and use other tools on that, such
 There is a package making Selenium available to R: [RSelenium](https://docs.ropensci.org/RSelenium/articles/basics.html).
 You *must* install Java to make this operational.
 
+<!-- #region vscode={"languageId": "r"} -->
+<div class="alert alert-block alert-info">
+    <b>University of Helsinki Windows computers:</b>
+    Selenium does not work due to IT security restrictions. Please contact IT helpdesk to enable Selenium on your machine.
+</div>
+<!-- #endregion -->
+
 ```{r vscode={'languageId': 'r'}}
 install.packages("RSelenium")
 ```
@@ -124,7 +131,9 @@ print( data )
 
 ### Tasks
 
-* Collect Tiktok vidoes on cats.
+* Comments from YLE
+* Comments for HS
+* Voluntary: Collect Tiktok vidoes on cats.
 
 
 ## Tricks of the trade
