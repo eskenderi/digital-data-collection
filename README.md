@@ -42,16 +42,10 @@ Concise, hands-on introduction to collecting, documenting, and analyzing digital
 | pe 17.10.2025| 14.15–15.45 | Päärakennus, U3040   |
 
 ## Resources & Links
-- Weekly materials & notebooks: **uh-dcm/digital-data-collection** (GitHub). :contentReference[oaicite:0]{index=0}  
-- Guide: *Making a research project understandable – Guide for data documentation* (UH Data Support, Zenodo). :contentReference[oaicite:1]{index=1}  
-- UH Data Management Planning (incl. DMP tools & guidance). :contentReference[oaicite:2]{index=2}  
-- SQL refresher: Software Carpentry “Databases and SQL” lesson. :contentReference[oaicite:3]{index=3}  
-- Selected readings (open access / classic):
-  - Bruns (2019) “After the ‘APIcalypse’…” *Information, Communication & Society*. :contentReference[oaicite:4]{index=4}  
-  - Fiesler & Proferes (2018) “Participant Perceptions of Twitter Research Ethics.” *Social Media + Society*. :contentReference[oaicite:5]{index=5}  
-  - Wilkinson et al. (2016) “FAIR Guiding Principles for scientific data management.” *Scientific Data*. :contentReference[oaicite:6]{index=6}  
-  - Araujo et al. (2022) “OSD2F: An Open-Source Data Donation Framework.” *CCR*. :contentReference[oaicite:7]{index=7}  
+- **Moodle** (materials, announcements): [https://moodle.helsinki.fi/course/view.php?id=65706](https://moodle.helsinki.fi/course/view.php?id=65706)  
+- **Previous edition (archive):** [https://opetus.mante.li/datacollection/](https://opetus.mante.li/datacollection/)  
+- **Research data management (UH):** [https://researchdata.helsinki.fi/](https://researchdata.helsinki.fi/)  
+- **Software Carpentry – Databases & SQL:** [https://swcarpentry.github.io/sql-novice-survey/](https://swcarpentry.github.io/sql-novice-survey/)  
+- **Reading (open access):** Bruns, A. (2019). *After the “APIcalypse”*. PDF: [https://snurb.info/files/2019/After%20the%20%27APIcalypse%27.pdf](https://snurb.info/files/2019/After%20the%20%27APIcalypse%27.pdf)
 
 ---
-
-*Instructor contact will be shared inside Moodle (no public email).*
