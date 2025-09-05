@@ -40,19 +40,38 @@ library('jsonlite')
 ```
 
 ```{r vscode={'languageId': 'r'}}
-r = request("https://reqres.in/api/users")
+# The ReqRes API now requires an API key, so let's use RandomUser API instead
+r = request("https://randomuser.me/api/?results=6")
 response = req_perform( r )
 
 data = fromJSON( resp_body_string(response) )  ## we could just do resp_body_json(response)
 
 print( data )
-print( data$data )
+print( data$results )  # RandomUser API uses 'results' instead of 'data'
 ```
 
 ```{r vscode={'languageId': 'r'}}
-for( i in 1:nrow(data$data) ) {
-    print( data$data[i, 'email'] )
+for( i in 1:nrow(data$results) ) {
+    print( data$results[i, 'email'] )
 }
+```
+
+## Saving and Loading JSON Data
+
+We can save our API data to a JSON file and load it back later.
+
+```{r vscode={'languageId': 'r'}}
+# Save the data to a JSON file
+write_json(data, "users_data.json", pretty = TRUE)
+cat("Data saved to users_data.json\n")
+```
+
+```{r vscode={'languageId': 'r'}}
+# Load the data back from the JSON file
+loaded_data = read_json("users_data.json", simplifyVector = TRUE)
+cat("Data loaded from users_data.json\n")
+print("First user's email from loaded data:")
+print(loaded_data$results[1, 'email'])
 ```
 
 ```{r vscode={'languageId': 'r'}}
