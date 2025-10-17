@@ -49,3 +49,5 @@ Concise, hands-on introduction to collecting, documenting, and analyzing digital
 - **Reading (open access):** Bruns, A. (2019). *After the “APIcalypse”*. PDF: [https://snurb.info/files/2019/After%20the%20%27APIcalypse%27.pdf](https://snurb.info/files/2019/After%20the%20%27APIcalypse%27.pdf)
 
 ---
+**Additional reading**  
+A useful companion for this course is *The Handbook of Computational Social Science* (Engel, Quan-Haase, Liu & Lyberg, 2021, Routledge, Vols. 1–2). Especially relevant are chapters such as **“Digital Trace Data: Modes of Data Collection, Applications, and Errors at a Glance”** (Vol. 1) and **“A Brief History of APIs,” “Application Programming Interfaces and Web Data for Social Research,”** and **“Web Data Mining: Collecting Textual Data from Web Pages Using R”** (Vol. 2). These readings show how researchers collect, validate, and analyze digital and web data—topics that closely match the practical work in this course.
